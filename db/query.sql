@@ -12,3 +12,13 @@ SELECT * FROM department;
 SELECT role.id AS ID, role.title AS Job_Title, role.salary AS Salary, department.name AS Department
 FROM role
 LEFT JOIN department ON role.department_id = department.id;
+
+-- Add departments, roles, employees
+INSERT INTO department (name)
+VALUES ("new_department");
+
+INSERT INTO role (title, salary, department_id)
+VALUES ("new_role", 100000, 1);
+
+INSERT INTO employee (first_name, last_name, role_id, manager_id)
+VALUES ("new_employee_first_name", "new_employee_last_name", 1, 1);
