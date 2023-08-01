@@ -3,11 +3,16 @@
   "version": "1.0.0",
   "description": "SQL based database employee tracker",
   "main": "server.js",
+  "dependencies": {
+    "console.table": "^0.10.0",
+    "inquirer": "^8.2.4",
+    "mysql2": "^2.3.0"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "author": "Mart Thostesen",
+  "license": "MIT"
 }
