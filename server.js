@@ -190,57 +190,84 @@ function addDepartment () {
 }
 
 function addRole () {
-    inquirer.prompt([
-        {
-            type: 'input',
-            name: 'title',
-            message: "What is the role's title?"
-        },
-        {
-            type: 'input',
-            name: 'salary',
-            message: "What is the role's salary?"
-        },
-        {
-            type: 'input',
-            name: 'department_id',
-            message: "What is the role's department ID?"
-        }
-    ])
-    .then(answer => {
-        const sql = `INSERT INTO role (title, salary, department_id)
-        VALUES (?, ?, ?)`;
-        const params = [answer.title, answer.salary, answer.department_id];
-        db.query(sql, params, (err, result) => {
-            if (err) throw err;
-            console.log('Role added.');
-            mainMenu();
+    db.query(`SELECT id, name FROM department`, (err, department) => {
+        if (err) throw err;
+    
+        const departments = department.map(({ id, name }) => ({
+            name: name, 
+            value: id,
+        }));
+        inquirer.prompt([
+            {
+                type: 'input',
+                name: 'title',
+                message: "What is the role's title?"
+            },
+            {
+                type: 'input',
+                name: 'salary',
+                message: "What is the role's salary?"
+            },
+            {
+                type: 'list',
+                choices: departments,
+                name: 'department_id',
+                message: "What is the role's department?"
+            }
+        ])
+        .then(answer => {
+            const sql = `INSERT INTO role (title, salary, department_id)
+            VALUES (?, ?, ?)`;
+            const params = [answer.title, answer.salary, answer.department_id];
+            db.query(sql, params, (err, result) => {
+                if (err) throw err;
+                console.log('Role added.');
+                mainMenu();
+            });
         });
     });
 }
 
 function updateRole () {
-    inquirer.prompt([
-        {
-            type: 'input',
-            name: 'employee_id',
-            message: "What is the employee's ID?"
-        },
-        {
-            type: 'input',
-            name: 'role_id',
-            message: "What is the employee's new role ID?"
-        }
-    ])
-    .then(answer => {
-        const sql = `UPDATE employee
-        SET role_id = ?
-        WHERE id = ?`;
-        const params = [answer.role_id, answer.employee_id];
-        db.query(sql, params, (err, result) => {
+    db.query(`SELECT id, title FROM role`, (err, role) => {
+        if (err) throw err;
+    
+        const roles = role.map(({ id, title }) => ({
+            name: title, 
+            value: id,
+        }));
+        db.query(`SELECT id, first_name, last_name FROM employee`, (err, employee) => {
             if (err) throw err;
-            console.log('Employee role updated.');
-            mainMenu();
+
+            const employees = employee.map(({ id, first_name, last_name }) => ({
+                name: `${first_name} ${last_name}`, 
+                value: id,
+            }));
+            inquirer.prompt([
+                {
+                    type: 'list',
+                    choices: employees,
+                    name: 'employee_id',
+                    message: "Who is the employee?"
+                },
+                {
+                    type: 'list',
+                    choices: roles,
+                    name: 'role_id',
+                    message: "What is the employee's new role?"
+                }
+            ])
+            .then(answer => {
+                const sql = `UPDATE employee
+                SET role_id = ?
+                WHERE id = ?`;
+                const params = [answer.role_id, answer.employee_id];
+            db.query(sql, params, (err, result) => {
+                if (err) throw err;
+                console.log('Employee role updated.');
+                mainMenu();
+                });
+            });
         });
     });
 }
