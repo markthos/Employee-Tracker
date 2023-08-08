@@ -129,42 +129,42 @@ function addEmployee () {
                 value: id,
              }));
 
-    inquirer.prompt([
-        {
-            type: 'input',
-            name: 'first_name',
-            message: "What is the employee's first name?"
-        },
-        {
-            type: 'input',
-            name: 'last_name',
-            message: "What is the employee's last name?"
-        },
-        {
-            type: 'list',
-            choices: roles,
-            name: 'role_id',
-            message: "What is the employee's role ID?"
-        },
-        {
-            type: 'list',
-            choices: employees,
-            name: 'manager_id',
-            message: "What is the employee's manager ID?"
-        }
-    ])
-    .then(answer => {
-        const sql = `INSERT INTO employee (first_name, last_name, role_id, manager_id)
-        VALUES (?, ?, ?, ?)`;
-        const params = [answer.first_name, answer.last_name, answer.role_id, answer.manager_id];
-        db.query(sql, params, (err, result) => {
-            if (err) throw err;
-            console.log('Employee added.');
-            mainMenu();
+            inquirer.prompt([
+                {
+                    type: 'input',
+                    name: 'first_name',
+                    message: "What is the employee's first name?"
+                },
+                {
+                    type: 'input',
+                    name: 'last_name',
+                    message: "What is the employee's last name?"
+                },
+                {
+                    type: 'list',
+                    choices: roles,
+                    name: 'role_id',
+                    message: "What is the employee's role?"
+                },
+                {
+                    type: 'list',
+                    choices: employees,
+                    name: 'manager_id',
+                    message: "Who is the employee's manager?"
+                }
+            ])
+            .then(answer => {
+                const sql = `INSERT INTO employee (first_name, last_name, role_id, manager_id)
+                VALUES (?, ?, ?, ?)`;
+                const params = [answer.first_name, answer.last_name, answer.role_id, answer.manager_id];
+                db.query(sql, params, (err, result) => {
+                    if (err) throw err;
+                    console.log('Employee added.');
+                    mainMenu();
+                });
+            });
         });
     });
-});
-});
 }
 
 
