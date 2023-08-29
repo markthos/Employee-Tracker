@@ -47,9 +47,12 @@ function mainMenu() {
             'View all departments',
             'View all roles',
             'Add an employee',
+            'Delete an employee',
             'Add a department',
+            'Delete a department',
             'Add a role',
             'Update an employee role',
+            'Delete a role',
             'Exit'
         ]
     })
@@ -67,8 +70,14 @@ function mainMenu() {
             case 'Add an employee':
                 addEmployee();
                 break;
+            case 'Delete an employee':
+                deleteEmployee();
+                break;
             case 'Add a department':
                 addDepartment();
+                break;
+            case 'Delete a department':
+                deleteDepartment();
                 break;
             case 'Add a role':
                 addRole();
@@ -76,12 +85,16 @@ function mainMenu() {
             case 'Update an employee role':
                 updateRole();
                 break;
+            case 'Delete a role':
+                deleteRole();
+                break;
             case 'Exit':
                 db.end();
                 break;
         }
     });
 }
+
 function viewEmployees () {
     const sql = `SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name AS department, role.salary, CONCAT(manager.first_name, ' ', manager.last_name) AS manager
     FROM employee
@@ -167,6 +180,33 @@ function addEmployee () {
     });
 }
 
+function deleteEmployee () {
+    db.query(`SELECT id, first_name, last_name FROM employee`, (err, employee) => {
+        if (err) throw err;
+
+        const employees = employee.map(({ id, first_name, last_name }) => ({
+            name: `${first_name} ${last_name}`,
+            value: id,
+        }));
+        inquirer.prompt([
+            {
+                type: 'list',
+                choices: employees,
+                name: 'employee_id',
+                message: "Which employee would you like to delete?"
+            }
+        ])
+        .then(answer => {
+            const sql = `DELETE FROM employee WHERE id = ?`;
+            const params = [answer.employee_id];
+            db.query(sql, params, (err, result) => {
+                if (err) throw err;
+                console.log('Employee deleted.');
+                mainMenu();
+            });
+        });
+    });
+}
 
 
 function addDepartment () {
@@ -188,6 +228,35 @@ function addDepartment () {
         });
     });
 }
+
+function deleteDepartment () {
+    db.query(`SELECT id, name FROM department`, (err, department) => {
+        if (err) throw err;
+
+        const departments = department.map(({ id, name }) => ({
+            name: name,
+            value: id,
+        }));
+        inquirer.prompt([
+            {
+                type: 'list',
+                choices: departments,
+                name: 'department_id',
+                message: "Which department would you like to delete?"
+            }
+        ])
+        .then(answer => {
+            const sql = `DELETE FROM department WHERE id = ?`;
+            const params = [answer.department_id];
+            db.query(sql, params, (err, result) => {
+                if (err) throw err;
+                console.log('Department deleted.');
+                mainMenu();
+            });
+        });
+    });
+}
+
 
 function addRole () {
     db.query(`SELECT id, name FROM department`, (err, department) => {
@@ -267,6 +336,34 @@ function updateRole () {
                 console.log('Employee role updated.');
                 mainMenu();
                 });
+            });
+        });
+    });
+}
+
+function deleteRole () {
+    db.query(`SELECT id, title FROM role`, (err, role) => {
+        if (err) throw err;
+
+        const roles = role.map(({ id, title }) => ({
+            name: title,
+            value: id,
+        }));
+        inquirer.prompt([
+            {
+                type: 'list',
+                choices: roles,
+                name: 'role_id',
+                message: "Which role would you like to delete?"
+            }
+        ])
+        .then(answer => {
+            const sql = `DELETE FROM role WHERE id = ?`;
+            const params = [answer.role_id];
+            db.query(sql, params, (err, result) => {
+                if (err) throw err;
+                console.log('Role deleted.');
+                mainMenu();
             });
         });
     });
