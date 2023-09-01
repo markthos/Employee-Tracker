@@ -30,6 +30,8 @@ Please be sure to have node.js installed on your computer. Clone the repo into y
 ## Usage
 Run the program after creating the database and/or seeding it with the provided seed data by typing into the command line 'npm start'  From here you can navigate using the arrow keys to the different options for viewing, adding, deleting, and updating the different roles, employees, and departments.
 
+[How to use the Employee-Tracker](https://drive.google.com/file/d/1Yn7EnEMaszX_N_gvYYktzbzQ05QFOz9V/view?usp=sharing)
+
 ## License
 This project is covered under the MIT [License](https://choosealicense.com/licenses/${license}).
 
